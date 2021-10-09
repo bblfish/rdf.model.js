@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>The Scala.js Tutorial</title>
+</head>
+<body>
+<p>
+After compiling in sbt using `run` you can load this html file in a browser.
+After opening the console in the browser you can access the module by entering the following
+</p>
+<code><pre>
+    import('./target/scala-3.1.0-RC3/rdflibjs-fastopt/main.mjs').then(m => module = m);
+    var df = module.DataFactory.create();
+    var hm = df.namedNode("https://bblfish.net/#i");
+    var foafn = df.namedNode("https://xmlns.com/foaf/0.1/name");
+    var st1 = df.quad(hm,foafn, df.literal("Henry","en"));
+    st1.subject;
+    </pre>
+</code>
+<p>
+    This
+</p>
+<!-- Include Scala.js compiled code -->
+<script type="module" src="./target/scala-3.1.0-RC3/rdflibjs-fastopt/main.mjs"></script>
+</body>
+</html>
