@@ -4,7 +4,7 @@ import sbt.Keys.description
 
 scalaVersion := Ver.scala3
 
-ThisBuild / homepage      := Some(url("https://github.com/banana-rdf/rdflib.types"))
+ThisBuild / homepage      := Some(url("https://github.com/bblfish/rdf.scala.js"))
 ThisBuild / licenses      += ("MIT", url("https://opensource.org/licenses/Apache-2.0"))
 ThisBuild / organization  := "run.cosy"
 ThisBuild / shellPrompt   := ((s: State) => Project.extract(s).currentRef.project + "> ")
@@ -43,7 +43,6 @@ lazy val commonSettings = Seq(
 	updateOptions := updateOptions.value.withCachedResolution(true) //to speed up dependency resolution
 )
 
-
 lazy val rdflibTypes = project.in(file("."))
 	.enablePlugins(ScalaJSPlugin)
 	//documentation here: https://scalablytyped.org/docs/library-developer
@@ -64,24 +63,3 @@ lazy val rdflibTypes = project.in(file("."))
 		}
 		// scalaJSLinkerConfig ~= { _.withModuleKind(ModuleKind.CommonJSModule) }
 	)
-
-//
-//lazy val rdflibScratch =  project.in(file("."))
-//	// .enablePlugins(ScalaJSBundlerPlugin)
-//	//documentation here: https://scalablytyped.org/docs/library-developer
-//	// call stImport in sbt to generate new sources
-//	//.enablePlugins(ScalablyTypedConverterGenSourcePlugin)
-//	.enablePlugins(ScalablyTypedConverterPlugin)
-//	.settings(commonSettings: _*)
-//	.settings(
-//		name := "rdflib-scratch",
-//		useYarn := true,
-//		scalacOptions ++= scala3jsOptions,
-//		scalaJSUseMainModuleInitializer := true,
-//		Compile / npmDependencies += "rdflib" -> "2.2.7",
-//		stUseScalaJsDom := true,
-//		libraryDependencies += "org.scala-js" %%% "rdflib-types" % "0.9-SNAPSHOT",
-//		Compile / mainClass := Some( "org.w3.banana.testRdfLib" )
-//	)
-//
-
