@@ -35,7 +35,7 @@ val scala3jsOptions =  Seq(
 
 
 lazy val commonSettings = Seq(
-	name := "rdflib.js",
+	name := "rdf-model-js",
 	version := "0.1-SNAPSHOT",
 	description := "rdf.js.org specs libs for scalajs",
 	startYear := Some(2021),
@@ -43,13 +43,12 @@ lazy val commonSettings = Seq(
 	updateOptions := updateOptions.value.withCachedResolution(true) //to speed up dependency resolution
 )
 
-lazy val rdflibTypes = project.in(file("."))
+lazy val rdfModelJS = project.in(file("."))
 	.enablePlugins(ScalaJSPlugin)
 	//documentation here: https://scalablytyped.org/docs/library-developer
 	// call stImport in sbt to generate new sources
 	.settings(commonSettings: _*)
 	.settings(
-		name := "scala-rdf-js",
 		scalacOptions ++= scala3jsOptions,
 		scalaJSUseMainModuleInitializer := true,
 		// https://github.com/com-lihaoyi/utest

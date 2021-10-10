@@ -1,8 +1,8 @@
-package org.w3.rdfjs
+package run.cosy.rdfjs.model
 
 import java.math.BigInteger
-import scala.scalajs.js.annotation.{JSExport, JSExportAll, JSExportTopLevel}
 import scala.scalajs.js
+import scala.scalajs.js.annotation.{JSExport, JSExportAll, JSExportTopLevel}
 
 trait Term[Type <: Term.TT](@JSExport val termType: Type):
   @JSExport("equals")
@@ -14,8 +14,8 @@ trait ValueTerm[Type <: Term.TT] extends Term[Type]:
   val value: String
 
 object Term:
-  type TT =  VTT | Quad.type | DefaultGraph.type
-  type VTT = NamedNode.type | Literal.type | Variable.type | BlankNode.type
+  type TT =  VTT | Quad.type
+  type VTT = NamedNode.type | Literal.type | Variable.type | BlankNode.type | DefaultGraph.type
 
   val NamedNode: "NamedNode" =  "NamedNode"
   val Literal: "Literal" = "Literal"
@@ -55,7 +55,13 @@ case class Variable(val value: String) extends ValueTerm[Term.Variable.type], Te
 
 @JSExportTopLevel("DefaultGraph")
 @JSExportAll
-object DefaultGraph extends Term(Term.DefaultGraph)
+object DefaultGraph extends ValueTerm[Term.DefaultGraph.type], Term(Term.DefaultGraph):
+  //rdflib.js states in default-graph-uri.ts
+  //"Prevents circular dependencies between data-factory-internal and statement"
+  //Note: 1) I cannot find it being used though 2) it is modelled as a NamedNode
+  //todo: remove if not needed
+  val value = "chrome:theSession"
+
 
 @JSExportAll
 case class Quad private[rdfjs] (
