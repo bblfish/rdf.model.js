@@ -10,7 +10,7 @@ After compiling in sbt using `run` you can load this html file in a browser.
 After opening the console in the browser you can access the module by entering the following
 </p>
 <code><pre>
-    import('./target/scala-3.1.0-RC3/rdflibjs-fastopt/main.mjs').then(m => module = m);
+    import('./target/scala-3.1.0-RC3/rdf-model-js-fastopt/main.mjs').then(m => module = m);
     var df = module.DataFactory.create();
     var hm = df.namedNode("https://bblfish.net/#i");
     var foafn = df.namedNode("https://xmlns.com/foaf/0.1/name");
@@ -22,6 +22,6 @@ After opening the console in the browser you can access the module by entering t
     This
 </p>
 <!-- Include Scala.js compiled code -->
-<script type="module" src="./target/scala-3.1.0-RC3/rdflibjs-fastopt/main.mjs"></script>
+<script type="module" src="./target/scala-3.1.0-RC3/rdf-model-js-fastopt/main.mjs"></script>
 </body>
 </html>

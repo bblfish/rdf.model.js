@@ -4,6 +4,10 @@ import java.math.BigInteger
 import scala.scalajs.js
 import scala.scalajs.js.annotation.{JSExport, JSExportAll, JSExportTopLevel}
 
+/**
+ * Implementation of rdf.js.org [https://rdf.js.org/data-model-spec/ Data Model Specification]
+ * with a few (documented) extra tweaks for compatibility with rdflib.js
+ */
 trait Term[Type <: Term.TT](@JSExport val termType: Type):
   @JSExport("equals")
   def termEquals(other: js.UndefOr[Term[?]]): Boolean =
@@ -100,6 +104,14 @@ class DataFactory(bnodeStart: BigInt = DataFactory.one):
     subject: ValueTerm[?], rel: NamedNode, obj: ValueTerm[?],
     graph: ValueTerm[?]|DefaultGraph.type
   ): Quad = Quad(subject, rel, obj, graph)
+
+  /**
+   * Required by rdflib.js which states:
+   * Generates a uniquely identifiably *idempotent* string for the given {term}.
+   * Equivalent to "Term.hashString"
+   * @example Use this to associate data with a term in an object { obj[id(term)] = "myData" }
+   */
+  def id(term: Term[?]): String = term.toString
 
 end DataFactory
 
