@@ -17,6 +17,7 @@ end Term
 trait ValueTerm[Type <: Term.TT] extends Term[Type]:
   val value: String
 
+@JSExportAll
 object Term:
   type TT =  VTT | Quad.type
   type VTT = NamedNode.type | Literal.type | Variable.type | BlankNode.type | DefaultGraph.type
@@ -57,23 +58,26 @@ case class BlankNode private[rdfjs] (val value: String)
 @JSExportAll
 case class Variable(val value: String) extends ValueTerm[Term.Variable.type], Term(Term.Variable)
 
+//rdflib.js states in default-graph-uri.ts
+//"Prevents circular dependencies between data-factory-internal and statement"
+//Note: 1) I cannot find it being used though 2) it is modelled as a NamedNode
 @JSExportTopLevel("DefaultGraph")
 @JSExportAll
-object DefaultGraph extends ValueTerm[Term.DefaultGraph.type], Term(Term.DefaultGraph):
-  //rdflib.js states in default-graph-uri.ts
-  //"Prevents circular dependencies between data-factory-internal and statement"
-  //Note: 1) I cannot find it being used though 2) it is modelled as a NamedNode
-  //todo: remove if not needed
-  val value = "chrome:theSession"
+case class DefaultGraph(val value: String = "chrome:theSession")
+  extends ValueTerm[Term.DefaultGraph.type], Term(Term.DefaultGraph)
 
-
-@JSExportAll
 case class Quad private[rdfjs] (
-  @JSExport("subject") val subj: ValueTerm[?],
-  @JSExport("predicate") val rel: NamedNode,
-  @JSExport("object") val obj: ValueTerm[?],
-  val graph: ValueTerm[?]|DefaultGraph.type
+  @JSExport("subject") val subj: Quad.Subject,
+  @JSExport("predicate") val rel: Quad.Predicate,
+  @JSExport("object") val obj: Quad.Object,
+  @JSExport("graph") val graph: Quad.Graph
 ) extends Term(Term.Quad)
+
+object Quad:
+  type Subject = BlankNode | NamedNode
+  type Predicate = NamedNode
+  type Object = BlankNode | NamedNode | Literal
+  type Graph = BlankNode | NamedNode | DefaultGraph
 
 @JSExportAll
 class DataFactory(bnodeStart: BigInt = DataFactory.one):
@@ -88,30 +92,38 @@ class DataFactory(bnodeStart: BigInt = DataFactory.one):
   private val bnode: Iterator[String] = bnodeCounter.map(_.toString(Character.MAX_RADIX))
 
   def namedNode(value: String): NamedNode = NamedNode(value)
+
   def literal(value: String): Literal = Literal(value)
   def literal(value: String, lang: String): Literal = Literal(value,lang)
   def literal(value: String, dataType: NamedNode): Literal = Literal(value,dataType)
+
   def variable(value: String): Variable = Variable(value)
+
   def blankNode(): BlankNode =
     BlankNode(bnode.next())
   def blankNode(label: String): BlankNode =
     if !label.contains('#') then BlankNode(label)
     else BlankNode(bnode.next())
+
   def quad(
-    subject: ValueTerm[?], rel: NamedNode, obj: ValueTerm[?]
-  ): Quad = Quad(subject, rel, obj, DefaultGraph)
+    subject: Quad.Subject, rel: Quad.Predicate, obj: Quad.Object
+  ): Quad = Quad(subject, rel, obj, defaultGraph)
   def quad(
-    subject: ValueTerm[?], rel: NamedNode, obj: ValueTerm[?],
-    graph: ValueTerm[?]|DefaultGraph.type
+    subject: Quad.Subject, rel: Quad.Predicate, obj: Quad.Object,
+    graph: Quad.Graph
   ): Quad = Quad(subject, rel, obj, graph)
 
+  val defaultGraph: DefaultGraph = new DefaultGraph()
+
+  type Nodes = BlankNode | NamedNode | Literal | DefaultGraph | Variable
   /**
    * Required by rdflib.js which states:
    * Generates a uniquely identifiably *idempotent* string for the given {term}.
-   * Equivalent to "Term.hashString"
+   * Equivalent to "Term.hashString"x§
    * @example Use this to associate data with a term in an object { obj[id(term)] = "myData" }
    */
-  def id(term: Term[?]): String = term.toString
+  def id(term: Nodes): String =
+    term.toString
 
 end DataFactory
 

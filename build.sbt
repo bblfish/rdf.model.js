@@ -1,6 +1,7 @@
 import Dependencies.Ver
 import org.scalajs.linker.interface.OutputPatterns
 import sbt.Keys.description
+import sbt.url
 
 scalaVersion := Ver.scala3
 
@@ -33,7 +34,6 @@ val scala3jsOptions =  Seq(
 	"-Yexplicit-nulls"                  // For explicit nulls behavior.
 )
 
-
 lazy val commonSettings = Seq(
 	name := "rdf-model-js",
 	version := "0.1-SNAPSHOT",
@@ -43,11 +43,34 @@ lazy val commonSettings = Seq(
 	updateOptions := updateOptions.value.withCachedResolution(true) //to speed up dependency resolution
 )
 
+lazy val publicationSettings = Seq(
+			sonatypeProfileName := "net.bblfish",
+			publishTo := sonatypePublishToBundle.value,
+
+			// To sync with Maven central, you need to supply the following information:
+			publishMavenStyle := true,
+
+			// Open-source license of your choice
+			licenses +=("Apache", url("https://opensource.org/licenses/Apache-2.0")),
+			homepage := Some(url("https://github.com/banana-rdf/")),
+			scmInfo := Some(
+				ScmInfo(
+					url("https://github.com/bblfish/rdf.scala.js"),
+					"git@github.com:bblfish/rdf.scala.js.git"
+				)
+			),
+			developers := List(
+				Developer(id="bblfish", name="Henry Story", email="henry.story@bblfish.net", url=url("https://bblfish.net/")),
+			)
+		)
+
+
 lazy val rdfModelJS = project.in(file("."))
 	.enablePlugins(ScalaJSPlugin)
 	//documentation here: https://scalablytyped.org/docs/library-developer
 	// call stImport in sbt to generate new sources
 	.settings(commonSettings: _*)
+	.settings(publicationSettings: _*)
 	.settings(
 		scalacOptions ++= scala3jsOptions,
 		scalaJSUseMainModuleInitializer := true,
