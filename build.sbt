@@ -6,8 +6,8 @@ import sbt.url
 scalaVersion := Ver.scala3
 
 ThisBuild / homepage      := Some(url("https://github.com/bblfish/rdf.scala.js"))
-ThisBuild / licenses      += ("MIT", url("https://opensource.org/licenses/Apache-2.0"))
-ThisBuild / organization  := "run.cosy"
+ThisBuild / licenses      += ("Apache 2.0", url("https://opensource.org/licenses/Apache-2.0"))
+ThisBuild / organization  := "net.bblfish.rdf"
 ThisBuild / shellPrompt   := ((s: State) => Project.extract(s).currentRef.project + "> ")
 ThisBuild / versionScheme := Some("early-semver")
 
@@ -44,14 +44,14 @@ lazy val commonSettings = Seq(
 )
 
 lazy val publicationSettings = Seq(
-			sonatypeProfileName := "net.bblfish",
+			sonatypeProfileName := "net.bblfish.rdf",
 			publishTo := sonatypePublishToBundle.value,
 
 			// To sync with Maven central, you need to supply the following information:
 			publishMavenStyle := true,
 
 			// Open-source license of your choice
-			licenses +=("Apache", url("https://opensource.org/licenses/Apache-2.0")),
+			licenses +=("Apache 2.0", url("https://opensource.org/licenses/Apache-2.0")),
 			homepage := Some(url("https://github.com/banana-rdf/")),
 			scmInfo := Some(
 				ScmInfo(
