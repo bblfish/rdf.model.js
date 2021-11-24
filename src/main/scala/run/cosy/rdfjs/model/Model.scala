@@ -96,33 +96,29 @@ class DataFactory(bnodeStart: BigInt = DataFactory.one):
 	}
 	private val bnode: Iterator[String] = bnodeCounter.map(_.toString(Character.MAX_RADIX))
 
-	def namedNode(value: String): NamedNode = NamedNode(value)
+	val namedNode: js.Function1[String,NamedNode] =
+		value => NamedNode(value)
 
-	def literal(value: String): Literal = Literal(value)
+	val literal: js.Function2[String, js.UndefOr[String|NamedNode],Literal] =
+		(value, tp) => tp.map{
+				case lang: String => Literal(value, lang)
+				case uri: NamedNode => Literal(value, uri)
+			}.getOrElse(Literal(value))
 
-	def literal(value: String, lang: String): Literal = Literal(value, lang)
+	val variable: js.Function1[String,Variable] =
+		(name) => Variable(name)
 
-	def literal(value: String, dataType: NamedNode): Literal = Literal(value, dataType)
+	val blankNode: js.Function1[js.UndefOr[String],BlankNode] =
+		label => label.map(lstr =>
+			if !lstr.contains('#') then BlankNode(lstr)
+			else BlankNode(bnode.next())
+		).getOrElse(BlankNode(bnode.next()))
 
-	def variable(value: String): Variable = Variable(value)
+	import Quad.{Subject,Predicate,Object,Graph}
+	val quad: js.Function4[Subject, Predicate, Object, js.UndefOr[Graph],Quad] =
+		(subj, pred, obj, graph) => Quad(subj, pred, obj, graph.getOrElse(defaultGraph()))
 
-	def blankNode(): BlankNode =
-		BlankNode(bnode.next())
-
-	def blankNode(label: String): BlankNode =
-		if !label.contains('#') then BlankNode(label)
-		else BlankNode(bnode.next())
-
-	def quad(
-		subject: Quad.Subject, rel: Quad.Predicate, obj: Quad.Object
-	): Quad = Quad(subject, rel, obj, defaultGraph)
-
-	def quad(
-		subject: Quad.Subject, rel: Quad.Predicate, obj: Quad.Object,
-		graph: Quad.Graph
-	): Quad = Quad(subject, rel, obj, graph)
-
-	val defaultGraph: DefaultGraph = new DefaultGraph()
+	val defaultGraph: js.Function0[DefaultGraph] = () => new DefaultGraph()
 
 	type Nodes = BlankNode | NamedNode | Literal | DefaultGraph | Variable
 
@@ -133,8 +129,7 @@ class DataFactory(bnodeStart: BigInt = DataFactory.one):
 	 *
 	 * @example Use this to associate data with a term in an object { obj[id(term)] = "myData" }
 	 */
-	def id(term: Nodes): String =
-		term.toString
+	val id: Nodes => String = term => term.toString
 
 end DataFactory
 

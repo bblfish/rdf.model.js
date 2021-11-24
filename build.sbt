@@ -13,7 +13,7 @@ ThisBuild / versionScheme := Some("early-semver")
 
 lazy val commonSettings = Seq(
 	name := "rdf-model-js",
-	version := "0.1-SNAPSHOT",
+	version := "0.1a-SNAPSHOT",
 	description := "rdf.js.org specs libs for scalajs",
 	startYear := Some(2021),
 	scalaVersion := Ver.scala3,
