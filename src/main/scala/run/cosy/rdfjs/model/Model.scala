@@ -82,8 +82,33 @@ object Quad:
 	type Object = BlankNode | NamedNode | Literal
 	type Graph = BlankNode | NamedNode | DefaultGraph
 
-@JSExportAll
-class DataFactory(bnodeStart: BigInt = DataFactory.one):
+/**
+ * sjrd said on Discord:
+ * > If you're implementing a JS interface, it's better to declare the interface as a trait Foo extends js.Object and then extend that trait.
+Instead of using exports.
+ **/
+trait DataFactoryI extends js.Object:
+	val namedNode: js.Function1[String,NamedNode]
+	val literal: js.Function2[String, js.UndefOr[String|NamedNode],Literal]
+	val variable: js.Function1[String,Variable]
+	val blankNode: js.Function1[js.UndefOr[String],BlankNode]
+
+	import Quad.{Subject,Predicate,Object,Graph}
+	val quad: js.Function4[Subject, Predicate, Object, js.UndefOr[Graph],Quad]
+	val defaultGraph: js.Function0[DefaultGraph]
+	type Nodes = BlankNode | NamedNode | Literal | DefaultGraph | Variable
+
+	/**
+	 * Required by rdflib.js which states:
+	 * Generates a uniquely identifiably *idempotent* string for the given {term}.
+	 * Equivalent to "Term.hashString"x§
+	 *
+	 * @example Use this to associate data with a term in an object { obj[id(term)] = "myData" }
+	 */
+	val id: Nodes => String
+end DataFactoryI
+
+class DataFactory(bnodeStart: BigInt = DataFactory.one) extends DataFactoryI:
 
 	private val bnodeCounter: Iterator[BigInt] = new Iterator[BigInt] {
 		var nextNode = bnodeStart
@@ -96,40 +121,32 @@ class DataFactory(bnodeStart: BigInt = DataFactory.one):
 	}
 	private val bnode: Iterator[String] = bnodeCounter.map(_.toString(Character.MAX_RADIX))
 
-	val namedNode: js.Function1[String,NamedNode] =
+	override val namedNode: js.Function1[String,NamedNode] =
 		value => NamedNode(value)
 
-	val literal: js.Function2[String, js.UndefOr[String|NamedNode],Literal] =
+	override val literal: js.Function2[String, js.UndefOr[String|NamedNode],Literal] =
 		(value, tp) => tp.map{
 				case lang: String => Literal(value, lang)
 				case uri: NamedNode => Literal(value, uri)
 			}.getOrElse(Literal(value))
 
-	val variable: js.Function1[String,Variable] =
+	override val variable: js.Function1[String,Variable] =
 		(name) => Variable(name)
 
-	val blankNode: js.Function1[js.UndefOr[String],BlankNode] =
+	override val blankNode: js.Function1[js.UndefOr[String],BlankNode] =
 		label => label.map(lstr =>
 			if !lstr.contains('#') then BlankNode(lstr)
 			else BlankNode(bnode.next())
 		).getOrElse(BlankNode(bnode.next()))
 
 	import Quad.{Subject,Predicate,Object,Graph}
-	val quad: js.Function4[Subject, Predicate, Object, js.UndefOr[Graph],Quad] =
-		(subj, pred, obj, graph) => Quad(subj, pred, obj, graph.getOrElse(defaultGraph()))
+	override val quad: js.Function4[Subject, Predicate, Object, js.UndefOr[Graph],Quad] =
+		(subj, pred, obj, graph) =>
+			Quad(subj, pred, obj, graph.getOrElse(defaultGraph()))
 
-	val defaultGraph: js.Function0[DefaultGraph] = () => new DefaultGraph()
+	override val defaultGraph: js.Function0[DefaultGraph] = () => new DefaultGraph()
 
-	type Nodes = BlankNode | NamedNode | Literal | DefaultGraph | Variable
-
-	/**
-	 * Required by rdflib.js which states:
-	 * Generates a uniquely identifiably *idempotent* string for the given {term}.
-	 * Equivalent to "Term.hashString"x§
-	 *
-	 * @example Use this to associate data with a term in an object { obj[id(term)] = "myData" }
-	 */
-	val id: Nodes => String = term => term.toString
+	override val id: Nodes => String = term => term.toString
 
 end DataFactory
 
