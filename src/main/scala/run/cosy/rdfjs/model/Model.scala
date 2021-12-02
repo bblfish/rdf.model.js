@@ -105,7 +105,7 @@ trait DataFactoryI extends js.Object:
 	 *
 	 * @example Use this to associate data with a term in an object { obj[id(term)] = "myData" }
 	 */
-	val id: Nodes => String
+	val id: js.Function1[Term[?],String]
 end DataFactoryI
 
 class DataFactory(bnodeStart: BigInt = DataFactory.one) extends DataFactoryI:
@@ -146,7 +146,7 @@ class DataFactory(bnodeStart: BigInt = DataFactory.one) extends DataFactoryI:
 
 	override val defaultGraph: js.Function0[DefaultGraph] = () => new DefaultGraph()
 
-	override val id: Nodes => String = term => term.toString
+	override val id: js.Function1[Term[?],String] = term => term.toString
 
 end DataFactory
 
