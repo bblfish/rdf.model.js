@@ -12,7 +12,7 @@ import org.openqa.selenium.firefox.{FirefoxOptions, FirefoxProfile}
 import org.openqa.selenium.remote.server.{DriverFactory, DriverProvider}
 import org.scalajs.jsenv.selenium.SeleniumJSEnv
 
-name := "rdf.scala.js"
+name := "rdf.model.js"
 
 ThisBuild / tlBaseVersion          := "0.2"
 ThisBuild / tlUntaggedAreSnapshots := true
@@ -83,8 +83,7 @@ ThisBuild / organization := "net.bblfish.rdf"
 headerLicenseStyle       := HeaderLicenseStyle.SpdxSyntax
 
 lazy val commonSettings = Seq(
-  name        := "rdf-model-js",
-  description := "rdf.js.org specs libs for scalajs",
+  description := "rdf models for JS from https://rdf.js.org",
   startYear   := Some(2021),
   updateOptions := updateOptions.value.withCachedResolution(
     true
