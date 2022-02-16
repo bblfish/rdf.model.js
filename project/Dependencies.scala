@@ -1,9 +1,9 @@
-import sbt._
+import sbt.*
 
 object Dependencies {
 
-	object Ver {
-		val scala3 = "3.1.0"
-	}
-	
+  object Ver {
+    val scala3 = "3.1.1"
+  }
+
 }
