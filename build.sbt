@@ -82,7 +82,7 @@ addCommandAlias("ciFirefox", CI.Firefox.toString)
 ThisBuild / scalaVersion := Ver.scala3
 
 ThisBuild / organization := "net.bblfish.rdf"
-headerLicenseStyle := HeaderLicenseStyle.SpdxSyntax
+headerLicenseStyle       := HeaderLicenseStyle.SpdxSyntax
 
 lazy val commonSettings = Seq(
   name        := "rdf-model-js",
