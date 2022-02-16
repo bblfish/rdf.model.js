@@ -33,8 +33,6 @@ ThisBuild / tlCiReleaseTags     := false // don't publish artifacts on github
 ThisBuild / crossScalaVersions         := Seq("3.1.1")
 ThisBuild / githubWorkflowJavaVersions := Seq(JavaSpec.temurin("17"))
 
-ThisBuild / githubWorkflowJavaVersions := Seq(JavaSpec.temurin("17"), JavaSpec.temurin("11"))
-
 tlReplaceCommandAlias("ciJS", List(CI.NodeJS, CI.Firefox, CI.Chrome).mkString)
 addCommandAlias("ciNodeJS", CI.NodeJS.toString)
 addCommandAlias("ciFirefox", CI.Firefox.toString)
