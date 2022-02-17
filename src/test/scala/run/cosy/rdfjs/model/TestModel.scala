@@ -11,9 +11,9 @@ import utest.*
 object TestModel extends TestSuite:
 
    val bblStr = "https://bblfish.net/#me"
-   val df     = DataFactory()
+   val df     = EZDataFactory()
 
-   def foaf(att: String)(using df: DataFactory): NamedNode =
+   def foaf(att: String)(using df: EZDataFactory): NamedNode =
      df.namedNode("https://xmlns.com/foaf/0.1/" + att)
 
    def tests = Tests {
