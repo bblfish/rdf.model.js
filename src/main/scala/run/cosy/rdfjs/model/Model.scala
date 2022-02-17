@@ -193,7 +193,7 @@ class DataFactory(val dfFcts: DataFactoryFncts):
        graph: Quad.Graph
    ): Quad = dfFcts.quad(subject, rel, obj, graph)
 
-   def defaultGraph: DefaultGraph = dfFcts.defaultGraph()
+   def defaultGraph(): DefaultGraph = dfFcts.defaultGraph()
 
    /** Required by rdflib.js which states: Generates a uniquely identifiably *idempotent* string for
      * the given {term}. Equivalent to "Term.hashString"x§
