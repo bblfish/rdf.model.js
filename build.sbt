@@ -27,7 +27,7 @@ ThisBuild / developers := List(
 enablePlugins(TypelevelCiReleasePlugin)
 enablePlugins(TypelevelSonatypePlugin)
 
-ThisBuild / tlCiReleaseBranches := Seq("main")
+ThisBuild / tlCiReleaseBranches := Seq()
 ThisBuild / tlCiReleaseTags     := false // don't publish artifacts on github
 
 ThisBuild / crossScalaVersions         := Seq("3.1.1")
