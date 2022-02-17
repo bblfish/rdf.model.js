@@ -33,13 +33,13 @@ object TestModel extends TestSuite:
        assert(st.subj == bbl2)
        assert(st.obj == bblName)
        assert(st.rel == fname)
-       assert(st.graph == df.defaultGraph)
+       assert(st.graph == df.defaultGraph())
      }
 
      test("Factory.id") {
        println(df.namedNode(bblStr))
        println(df.literal("Hello"))
-       println(df.defaultGraph)
+       println(df.defaultGraph())
        println(df.blankNode("l1"))
      }
    }
